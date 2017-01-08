@@ -379,11 +379,24 @@ void push_service (struct tgl_message *M) {
     lua_add_string_field ("type", "chat_delete_photo");
     break;
   case tgl_message_action_chat_add_users:
+    my_lua_checkstack(luaState, 4 + (2 * M->action.user_num));
     lua_newtable (luaState);
     lua_add_string_field ("type", "chat_add_user");
 
     lua_pushstring (luaState, "user");
     push_peer (tgl_set_peer_id (TGL_PEER_USER, M->action.users[0]), tgl_peer_get (TLS, tgl_set_peer_id (TGL_PEER_USER, M->action.users[0])));
+    lua_settable (luaState, -3);
+
+    lua_pushstring (luaState, "users");
+    lua_newtable(luaState);
+
+    int i;
+    for (i = 0; i < M->action.user_num; i++) {
+      lua_pushnumber(luaState, i + 1);
+      push_peer (tgl_set_peer_id (TGL_PEER_USER, M->action.users[i]), tgl_peer_get (TLS, tgl_set_peer_id (TGL_PEER_USER, M->action.users[i])));
+      lua_settable (luaState, -3);
+    }
+
     lua_settable (luaState, -3);
     break;
   case tgl_message_action_chat_add_user_by_link:
