@@ -86,7 +86,7 @@ void lua_add_lstring_field (const char *name, const char *value, int len) {
 void lua_add_string_field_arr (int num, const char *value) {
   if (!value || !strlen (value)) { return; }
   my_lua_checkstack (luaState, 3);
-  lua_pushnumber (luaState, num);
+  lua_pushinteger (luaState, num);
   lua_pushstring (luaState, value);
   lua_settable (luaState, -3);
 }
@@ -96,6 +96,14 @@ void lua_add_num_field (const char *name, double value) {
   my_lua_checkstack (luaState, 3);
   lua_pushstring (luaState, name);
   lua_pushnumber (luaState, value);
+  lua_settable (luaState, -3);
+}
+
+void lua_add_int_field (const char *name, double value) {
+  assert (name && strlen (name));
+  my_lua_checkstack (luaState, 3);
+  lua_pushstring (luaState, name);
+  lua_pushinteger (luaState, value);
   lua_settable (luaState, -3);
 }
 
@@ -135,13 +143,13 @@ void push_chat (tgl_peer_t *P) {
   my_lua_checkstack (luaState, 4);
   assert (P->chat.title);
   lua_add_string_field ("title", P->chat.title);
-  lua_add_num_field ("members_num", P->chat.users_num);
+  lua_add_int_field ("members_num", P->chat.users_num);
   if (P->chat.user_list) {
     lua_pushstring (luaState, "members");
     lua_newtable (luaState);
     int i;
     for (i = 0; i < P->chat.users_num; i++) {
-      lua_pushnumber (luaState, i+1);
+      lua_pushinteger (luaState, i+1);
       tgl_peer_id_t id = TGL_MK_USER (P->chat.user_list[i].user_id);
       push_peer (id, tgl_peer_get (TLS, id));
       lua_settable (luaState, -3);
@@ -162,9 +170,9 @@ void push_channel (tgl_peer_t *P) {
   lua_add_string_field ("title", P->channel.title);
   lua_add_string_field ("about", P->channel.about);
   lua_add_string_field ("username", P->channel.username);
-  lua_add_num_field ("participants_count", P->channel.participants_count);
-  lua_add_num_field ("admins_count", P->channel.admins_count);
-  lua_add_num_field ("kicked_count", P->channel.kicked_count);
+  lua_add_int_field ("participants_count", P->channel.participants_count);
+  lua_add_int_field ("admins_count", P->channel.admins_count);
+  lua_add_int_field ("kicked_count", P->channel.kicked_count);
 }
 
 void push_update_types (unsigned flags) {
@@ -231,7 +239,7 @@ void push_peer (tgl_peer_id_t id, tgl_peer_t *P) {
   lua_pushstring (luaState, "peer_type");
   push_tgl_peer_type (tgl_get_peer_type (id));
   lua_settable (luaState, -3);
-  lua_add_num_field ("peer_id", tgl_get_peer_id (id));
+  lua_add_int_field ("peer_id", tgl_get_peer_id (id));
 
   if (!P || !(P->flags & TGLPF_CREATED)) {
     lua_pushstring (luaState, "print_name");
@@ -259,7 +267,7 @@ void push_peer (tgl_peer_id_t id, tgl_peer_t *P) {
   }
 
   lua_add_string_field ("print_name", P->print_name);
-  lua_add_num_field ("flags", P->flags);
+  lua_add_int_field ("flags", P->flags);
 
   switch (tgl_get_peer_type (id)) {
   case TGL_PEER_USER:
@@ -324,7 +332,7 @@ void push_media (struct tgl_message_media *M) {
     lua_add_string_field ("phone", M->phone);
     lua_add_string_field ("first_name", M->first_name);
     lua_add_string_field ("last_name", M->last_name);
-    lua_add_num_field ("user_id", M->user_id);
+    lua_add_int_field ("user_id", M->user_id);
     break;
   case tgl_message_media_webpage:
     lua_newtable (luaState);
@@ -392,7 +400,7 @@ void push_service (struct tgl_message *M) {
 
     int i;
     for (i = 0; i < M->action.user_num; i++) {
-      lua_pushnumber(luaState, i + 1);
+      lua_pushinteger(luaState, i + 1);
       push_peer (tgl_set_peer_id (TGL_PEER_USER, M->action.users[i]), tgl_peer_get (TLS, tgl_set_peer_id (TGL_PEER_USER, M->action.users[i])));
       lua_settable (luaState, -3);
     }
@@ -418,22 +426,22 @@ void push_service (struct tgl_message *M) {
   case tgl_message_action_set_message_ttl:
     lua_newtable (luaState);
     lua_add_string_field ("type", "set_ttl");
-    lua_add_num_field ("ttl", M->action.ttl);
+    lua_add_int_field ("ttl", M->action.ttl);
     break;
   case tgl_message_action_read_messages:
     lua_newtable (luaState);
     lua_add_string_field ("type", "read");
-    lua_add_num_field ("count", M->action.read_cnt);
+    lua_add_int_field ("count", M->action.read_cnt);
     break;
   case tgl_message_action_delete_messages:
     lua_newtable (luaState);
     lua_add_string_field ("type", "delete");
-    lua_add_num_field ("count", M->action.delete_cnt);
+    lua_add_int_field ("count", M->action.delete_cnt);
     break;
   case tgl_message_action_screenshot_messages:
     lua_newtable (luaState);
     lua_add_string_field ("type", "screenshot");
-    lua_add_num_field ("count", M->action.screenshot_cnt);
+    lua_add_int_field ("count", M->action.screenshot_cnt);
     break;
   case tgl_message_action_flush_history:
     lua_newtable (luaState);
@@ -446,7 +454,7 @@ void push_service (struct tgl_message *M) {
   case tgl_message_action_notify_layer:
     lua_newtable (luaState);
     lua_add_string_field ("type", "set_layer");
-    lua_add_num_field ("layer", M->action.layer);
+    lua_add_int_field ("layer", M->action.layer);
     break;
   case tgl_message_action_typing:
     lua_newtable (luaState);
@@ -480,7 +488,7 @@ void push_service (struct tgl_message *M) {
   case tgl_message_action_migrated_to:
     lua_newtable (luaState);
     lua_add_string_field ("type", "migrated_to");
-    lua_add_num_field("channel_id", M->action.channel_id);
+    lua_add_int_field("channel_id", M->action.channel_id);
     break;
   case tgl_message_action_migrated_from:
     lua_newtable (luaState);
@@ -498,16 +506,16 @@ void push_message (struct tgl_message *M) {
   lua_newtable (luaState);
 
   lua_add_string_field ("id", print_permanent_msg_id (M->permanent_id));
-  lua_add_num_field ("temp_id", (M->temp_id));
+  lua_add_int_field ("temp_id", (M->temp_id));
   if (!(M->flags & TGLMF_CREATED)) { return; }
-  lua_add_num_field ("flags", M->flags);
+  lua_add_int_field ("flags", M->flags);
 
   if (tgl_get_peer_type (M->fwd_from_id)) {
     lua_pushstring (luaState, "fwd_from");
     push_peer (M->fwd_from_id, tgl_peer_get (TLS, M->fwd_from_id));
     lua_settable (luaState, -3); // fwd_from
 
-    lua_add_num_field ("fwd_date", M->fwd_date);
+    lua_add_int_field ("fwd_date", M->fwd_date);
   }
 
   if (M->reply_id) {
@@ -540,7 +548,7 @@ void push_message (struct tgl_message *M) {
   lua_settable (luaState, -3);
 
   lua_pushstring (luaState, "date");
-  lua_pushnumber (luaState, M->date);
+  lua_pushinteger (luaState, M->date);
   lua_settable (luaState, -3);
 
   lua_pushstring (luaState, "service");
@@ -599,7 +607,7 @@ void lua_our_id (tgl_peer_id_t id) {
   //lua_checkstack (luaState, 20);
   my_lua_checkstack (luaState, 20);
   lua_getglobal (luaState, "on_our_id");
-  lua_pushnumber (luaState, tgl_get_peer_id (id));
+  lua_pushinteger (luaState, tgl_get_peer_id (id));
   assert (lua_gettop (luaState) == 2);
 
   int r = ps_lua_pcall (luaState, 1, 0, 0);
@@ -799,7 +807,7 @@ void lua_empty_cb (struct tgl_state *TLSR, void *cb_extra, int success) {
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->func);
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->param);
 
-  lua_pushnumber (luaState, success);
+  lua_pushboolean (luaState, success);
 
   assert (lua_gettop (luaState) == 3);
 
@@ -825,13 +833,13 @@ void lua_contact_list_cb (struct tgl_state *TLSR, void *cb_extra, int success, i
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->func);
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->param);
 
-  lua_pushnumber (luaState, success);
+  lua_pushboolean (luaState, success);
 
   if (success) {
     lua_newtable (luaState);
     int i;
     for (i = 0; i < num; i++) {
-      lua_pushnumber (luaState, i+1);
+      lua_pushinteger (luaState, i+1);
       push_peer (UL[i]->id, (void *)UL[i]);
       lua_settable (luaState, -3);
     }
@@ -863,12 +871,12 @@ void lua_dialog_list_cb (struct tgl_state *TLSR, void *cb_extra, int success, in
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->func);
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->param);
 
-  lua_pushnumber (luaState, success);
+  lua_pushboolean (luaState, success);
   if (success) {
     lua_newtable (luaState);
     int i;
     for (i = 0; i < num; i++) {
-      lua_pushnumber (luaState, i+1);
+      lua_pushinteger (luaState, i+1);
 
       lua_newtable (luaState);
 
@@ -884,7 +892,7 @@ void lua_dialog_list_cb (struct tgl_state *TLSR, void *cb_extra, int success, in
       }
 
       lua_pushstring (luaState, "unread");
-      lua_pushnumber (luaState, unread[i]);
+      lua_pushboolean (luaState, unread[i]);
       lua_settable (luaState, -3);
 
       lua_settable (luaState, -3);
@@ -917,7 +925,7 @@ void lua_msg_cb (struct tgl_state *TLSR, void *cb_extra, int success, struct tgl
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->func);
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->param);
 
-  lua_pushnumber (luaState, success);
+  lua_pushboolean (luaState, success);
 
   if (success && M && (M->flags & TGLMF_CREATED)) {
     push_message (M);
@@ -949,7 +957,7 @@ void lua_one_msg_cb (struct tgl_state *TLSR, void *cb_extra, int success, int si
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->func);
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->param);
 
-  lua_pushnumber (luaState, success);
+  lua_pushboolean (luaState, success);
 
   if (success && size > 0 && M[0] && (M[0]->flags & TGLMF_CREATED)) {
     push_message (M[0]);
@@ -981,13 +989,13 @@ void lua_msg_list_cb (struct tgl_state *TLSR, void *cb_extra, int success, int n
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->func);
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->param);
 
-  lua_pushnumber (luaState, success);
+  lua_pushboolean (luaState, success);
 
   if (success) {
     lua_newtable (luaState);
     int i;
     for (i = 0; i < num; i++) {
-      lua_pushnumber (luaState, i+1);
+      lua_pushinteger (luaState, i+1);
       push_message (M[i]);
       lua_settable (luaState, -3);
     }
@@ -1019,7 +1027,7 @@ void lua_file_cb (struct tgl_state *TLSR, void *cb_extra, int success, const cha
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->func);
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->param);
 
-  lua_pushnumber (luaState, success);
+  lua_pushboolean (luaState, success);
 
   if (success) {
     lua_pushstring (luaState, file_name);
@@ -1051,7 +1059,7 @@ void lua_chat_cb (struct tgl_state *TLSR, void *cb_extra, int success, struct tg
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->func);
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->param);
 
-  lua_pushnumber (luaState, success);
+  lua_pushboolean (luaState, success);
 
   if (success) {
     push_peer (C->id, (void *)C);
@@ -1083,7 +1091,7 @@ void lua_secret_chat_cb (struct tgl_state *TLSR, void *cb_extra, int success, st
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->func);
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->param);
 
-  lua_pushnumber (luaState, success);
+  lua_pushboolean (luaState, success);
 
   if (success) {
     push_peer (C->id, (void *)C);
@@ -1115,7 +1123,7 @@ void lua_channel_cb (struct tgl_state *TLSR, void *cb_extra, int success, struct
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->func);
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->param);
 
-  lua_pushnumber (luaState, success);
+  lua_pushboolean (luaState, success);
 
   if (success) {
     push_peer (C->id, (void *)C);
@@ -1147,7 +1155,7 @@ void lua_user_cb (struct tgl_state *TLSR, void *cb_extra, int success, struct tg
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->func);
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->param);
 
-  lua_pushnumber (luaState, success);
+  lua_pushboolean (luaState, success);
 
   if (success) {
     push_peer (C->id, (void *)C);
@@ -1179,7 +1187,7 @@ void lua_str_cb (struct tgl_state *TLSR, void *cb_extra, int success, const char
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->func);
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->param);
 
-  lua_pushnumber (luaState, success);
+  lua_pushboolean (luaState, success);
 
   if (success) {
     lua_pushstring (luaState, data);
@@ -1213,7 +1221,7 @@ void lua_contact_search_cb (struct tgl_state *TLSR, void *cb_extra, int success,
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->func);
   lua_rawgeti (luaState, LUA_REGISTRYINDEX, cb->param);
 
-  lua_pushnumber (luaState, success);
+  lua_pushboolean (luaState, success);
 
   if (success) {
     push_peer (C->id, (void *)C);
@@ -2000,7 +2008,7 @@ static void do_interface_from_lua (struct command *command, int arg_num, struct 
       break;
     case ca_number:
       if (args[i].num != NOT_FOUND) {
-        lua_pushnumber (luaState, args[i].num);
+        lua_pushinteger (luaState, args[i].num);
       } else {
         lua_pushnil (luaState);
       }
