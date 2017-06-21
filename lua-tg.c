@@ -137,6 +137,10 @@ void push_user (tgl_peer_t *P) {
   if (P->user.access_hash) {
     lua_add_num_field ("access_hash", P->user.access_hash);
   }
+  my_lua_checkstack(luaState, 3);
+  lua_pushstring(luaState, "bot");
+  lua_pushboolean(luaState, P->user.bot);
+  lua_settable(luaState, -3);
 }
 
 void push_chat (tgl_peer_t *P) {

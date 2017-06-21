@@ -68,6 +68,7 @@ void json_pack_user (json_t *res, tgl_peer_t *P) {
   if (P->user.username) {
     assert (json_object_set (res, "username", json_string (P->user.username)) >= 0);
   }
+  assert (json_object_set (res, "bot", json_boolean(P->user.bot)) >= 0);
 }
 
 void json_pack_chat (json_t *res, tgl_peer_t *P) {
