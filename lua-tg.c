@@ -137,6 +137,10 @@ void push_user (tgl_peer_t *P) {
   if (P->user.access_hash) {
     lua_add_num_field ("access_hash", P->user.access_hash);
   }
+  my_lua_checkstack(luaState, 3);
+  lua_pushstring(luaState, "bot");
+  lua_pushboolean(luaState, P->user.bot);
+  lua_settable(luaState, -3);
 }
 
 void push_chat (tgl_peer_t *P) {
@@ -173,6 +177,10 @@ void push_channel (tgl_peer_t *P) {
   lua_add_int_field ("participants_count", P->channel.participants_count);
   lua_add_int_field ("admins_count", P->channel.admins_count);
   lua_add_int_field ("kicked_count", P->channel.kicked_count);
+  my_lua_checkstack (luaState, 3);
+  lua_pushstring (luaState, "megagroup");
+  lua_pushboolean (luaState, P->flags & TGLCHF_MEGAGROUP);
+  lua_settable (luaState, -3);
 }
 
 void push_update_types (unsigned flags) {
@@ -573,6 +581,13 @@ void push_message (struct tgl_message *M) {
   }
 }
 
+void push_error (void) {
+  my_lua_checkstack(luaState, 10);
+  lua_newtable(luaState);
+  lua_add_int_field ("error_code", TLS->error_code);
+  lua_add_string_field ("error", TLS->error);
+}
+
 void lua_binlog_end (void) {
   if (!have_file) { return; }
   lua_settop (luaState, 0);
@@ -844,7 +859,8 @@ void lua_contact_list_cb (struct tgl_state *TLSR, void *cb_extra, int success, i
       lua_settable (luaState, -3);
     }
   } else {
-    lua_pushboolean (luaState, 0);
+    //lua_pushboolean (luaState, 0);
+    push_error ();
   }
 
   assert (lua_gettop (luaState) == 4);
@@ -898,7 +914,8 @@ void lua_dialog_list_cb (struct tgl_state *TLSR, void *cb_extra, int success, in
       lua_settable (luaState, -3);
     }
   } else {
-    lua_pushboolean (luaState, 0);
+    //lua_pushboolean (luaState, 0);
+    push_error ();
   }
   assert (lua_gettop (luaState) == 4);
 
@@ -930,7 +947,7 @@ void lua_msg_cb (struct tgl_state *TLSR, void *cb_extra, int success, struct tgl
   if (success && M && (M->flags & TGLMF_CREATED)) {
     push_message (M);
   } else {
-    lua_pushboolean (luaState, 0);
+    push_error ();
   }
 
   assert (lua_gettop (luaState) == 4);
@@ -962,7 +979,8 @@ void lua_one_msg_cb (struct tgl_state *TLSR, void *cb_extra, int success, int si
   if (success && size > 0 && M[0] && (M[0]->flags & TGLMF_CREATED)) {
     push_message (M[0]);
   } else {
-    lua_pushboolean (luaState, 0);
+    //lua_pushboolean (luaState, 0);
+    push_error ();
   }
 
   assert (lua_gettop (luaState) == 4);
@@ -1000,7 +1018,8 @@ void lua_msg_list_cb (struct tgl_state *TLSR, void *cb_extra, int success, int n
       lua_settable (luaState, -3);
     }
   } else {
-    lua_pushboolean (luaState, 0);
+    //lua_pushboolean (luaState, 0);
+    push_error ();
   }
 
   assert (lua_gettop (luaState) == 4);
@@ -1032,7 +1051,8 @@ void lua_file_cb (struct tgl_state *TLSR, void *cb_extra, int success, const cha
   if (success) {
     lua_pushstring (luaState, file_name);
   } else {
-    lua_pushboolean (luaState, 0);
+    //lua_pushboolean (luaState, 0);
+    push_error ();
   }
 
   assert (lua_gettop (luaState) == 4);
@@ -1064,7 +1084,8 @@ void lua_chat_cb (struct tgl_state *TLSR, void *cb_extra, int success, struct tg
   if (success) {
     push_peer (C->id, (void *)C);
   } else {
-    lua_pushboolean (luaState, 0);
+    //lua_pushboolean (luaState, 0);
+    push_error ();
   }
 
   assert (lua_gettop (luaState) == 4);
@@ -1096,7 +1117,8 @@ void lua_secret_chat_cb (struct tgl_state *TLSR, void *cb_extra, int success, st
   if (success) {
     push_peer (C->id, (void *)C);
   } else {
-    lua_pushboolean (luaState, 0);
+    //lua_pushboolean (luaState, 0);
+    push_error ();
   }
 
   assert (lua_gettop (luaState) == 4);
@@ -1128,7 +1150,8 @@ void lua_channel_cb (struct tgl_state *TLSR, void *cb_extra, int success, struct
   if (success) {
     push_peer (C->id, (void *)C);
   } else {
-    lua_pushboolean (luaState, 0);
+    //lua_pushboolean (luaState, 0);
+    push_error ();
   }
 
   assert (lua_gettop (luaState) == 4);
@@ -1160,7 +1183,8 @@ void lua_user_cb (struct tgl_state *TLSR, void *cb_extra, int success, struct tg
   if (success) {
     push_peer (C->id, (void *)C);
   } else {
-    lua_pushboolean (luaState, 0);
+    //lua_pushboolean (luaState, 0);
+    push_error ();
   }
 
   assert (lua_gettop (luaState) == 4);
@@ -1192,7 +1216,8 @@ void lua_str_cb (struct tgl_state *TLSR, void *cb_extra, int success, const char
   if (success) {
     lua_pushstring (luaState, data);
   } else {
-    lua_pushboolean (luaState, 0);
+    //lua_pushboolean (luaState, 0);
+    push_error ();
   }
 
   assert (lua_gettop (luaState) == 4);
@@ -1226,7 +1251,8 @@ void lua_contact_search_cb (struct tgl_state *TLSR, void *cb_extra, int success,
   if (success) {
     push_peer (C->id, (void *)C);
   } else {
-    lua_pushboolean (luaState, 0);
+    //lua_pushboolean (luaState, 0);
+    push_error ();
   }
 
   assert (lua_gettop (luaState) == 4);
