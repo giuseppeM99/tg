@@ -745,7 +745,6 @@ enum lua_query_type {
   lq_load_video_thumb,
   lq_load_video,
   lq_chat_info,
-  lq_channel_info,
   lq_user_info,
   lq_history,
   lq_chat_add_user,
@@ -1488,10 +1487,6 @@ void lua_do_all (void) {
       tgl_do_create_channel (TLS, 1, &lua_ptr[p + 1].peer_id, LUA_STR_ARG (p + 2), LUA_STR_ARG (p + 3), 1,lua_empty_cb, lua_ptr[p].ptr);
       p += 4;
       break;
-    case lq_channel_info:
-      tgl_do_get_channel_info (TLS, lua_ptr[p + 1].peer_id, 0, lua_channel_cb, lua_ptr[p].ptr);
-      p += 2;
-      break;
     case lq_export_channel_link:
       tgl_do_export_channel_link (TLS, lua_ptr[p + 1].peer_id, lua_str_cb, lua_ptr[p].ptr);
       p += 2;
@@ -1667,7 +1662,6 @@ struct lua_function functions[] = {
   {"get_channels_dialog_list", lq_channels_dialog_list, { lfp_none }},
   {"chat_upgrade", lq_chat_upgrade, { lfp_peer, lfp_none }},
   {"create_channel", lq_create_channel, { lfp_peer, lfp_string, lfp_string, lfp_none }},
-  {"channel_info", lq_channel_info, { lfp_channel, lfp_none }},
   {"export_channel_link", lq_export_channel_link, { lfp_channel, lfp_none }},
   {"channel_invite", lq_channel_invite, { lfp_channel, lfp_user, lfp_none }},
   {"channel_join", lq_channel_join, { lfp_channel, lfp_none }},
