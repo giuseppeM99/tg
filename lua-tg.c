@@ -783,9 +783,11 @@ enum lua_query_type {
   lq_channel_invite,
   lq_channel_join,
   lq_leave_channel,
+  lq_channel_leave,
   lq_channel_kick,
   lq_channel_get_admins,
   lq_channel_get_users,
+  lq_channel_get_members,
   lq_channel_get_bots,
   lq_channel_get_kicked,
   lq_channel_unblock,
@@ -1503,6 +1505,10 @@ void lua_do_all (void) {
       tgl_do_leave_channel (TLS, lua_ptr[p + 1].peer_id, lua_empty_cb, lua_ptr[p].ptr);
       p += 2;
 	    break;
+    case lq_channel_leave:
+      tgl_do_leave_channel (TLS, lua_ptr[p + 1].peer_id, lua_empty_cb, lua_ptr[p].ptr);
+      p += 2;
+  	  break;
     case lq_channel_kick:
       tgl_do_channel_kick_user (TLS, lua_ptr[p + 1].peer_id, lua_ptr[p + 2].peer_id, lua_empty_cb, lua_ptr[p].ptr);
       p += 3;
@@ -1512,6 +1518,10 @@ void lua_do_all (void) {
       p += 2;
       break;
     case lq_channel_get_users:
+      tgl_do_channel_get_members (TLS, lua_ptr[p + 1].peer_id, 0, 0, 0, lua_contact_list_cb, lua_ptr[p].ptr);
+      p += 2;
+      break;
+    case lq_channel_get_members:
       tgl_do_channel_get_members (TLS, lua_ptr[p + 1].peer_id, 0, 0, 0, lua_contact_list_cb, lua_ptr[p].ptr);
       p += 2;
       break;
