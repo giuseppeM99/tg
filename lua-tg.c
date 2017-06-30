@@ -504,10 +504,10 @@ void push_message (struct tgl_message *M) {
   lua_newtable (luaState);
 
   lua_add_string_field ("id", print_permanent_msg_id (M->permanent_id));
-  lua_add_num_field ("message_id", M->permanent_id.id);
+  lua_add_int_field ("message_id", M->permanent_id.id);
 
   if (!(M->flags & TGLMF_CREATED)) { return; }
-  lua_add_num_field ("flags", M->flags);
+  lua_add_int_field ("flags", M->flags);
 
   if (tgl_get_peer_type (M->fwd_from_id)) {
     lua_pushstring (luaState, "fwd_from");
