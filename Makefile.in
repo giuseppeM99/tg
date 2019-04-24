@@ -56,10 +56,9 @@ ${EXE}/telegram-cli: ${TG_OBJECTS} ${LIB}/libtgl.a
 	${CC} $^ ${LINK_FLAGS} -o $@
 
 	if [ -d shared ]; then cp shared/* bin; fi;
-	
+
 clean:
 	rm -rf ${DIR_LIST}
 
 distclean:
 	rm -rf ${DIR_LIST} config.h config.log config.status
-

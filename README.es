@@ -1,6 +1,6 @@
 ## Telegram messenger CLI [![Build Status](https://travis-ci.org/vysheng/tg.png)](https://travis-ci.org/vysheng/tg)
 
-!!!! May be outdated. Please refer to english README as more actual. 
+!!!! May be outdated. Please refer to english README as more actual.
 
 
 Interfaz de línea de comandos para: [Telegram](http://telegram.org). Usa interfaz readline.
@@ -16,12 +16,12 @@ La documentación del protocolo MTproto está disponible aquí: http://core.tele
 Clona el Repositorio GitHub
 
     $ git clone https://github.com/vysheng/tg.git && cd tg
-    
+
 o descarga y descomprime el zip
 
     $ wget https://github.com/vysheng/tg/archive/master.zip -O tg-master.zip
     $ unzip tg-master.zip && cd tg-master
-    
+
 #### Linux
 
 Librerías requeridas: readline openssl y (si desea usar config) libconfig y liblua.
@@ -32,9 +32,9 @@ En Ubuntu usa:
     $ sudo apt-get install libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev
 
 En gentoo:
-    
+
     $ sudo emerge -av sys-libs/readline dev-libs/libconfig dev-libs/openssl dev-lang/lua
-    
+
 En Fedora:
 
     $ sudo yum install lua-devel openssl-devel libconfig-devel readline-devel
@@ -57,7 +57,7 @@ El cliente depende de [librería readline](http://cnswww.cns.cwru.edu/php/chet/r
     $ export CFLAGS="-I/usr/local/include -I/usr/local/Cellar/readline/6.2.4/include"
     $ export LDFLAGS="-L/usr/local/lib -L/usr/local/Cellar/readline/6.2.4/lib"
     $ ./configure && make
-    
+
 Gracias a [@jfontan](https://github.com/vysheng/tg/issues/3#issuecomment-28293731) por esta solución.
 
 #### FreeBSD
@@ -71,7 +71,7 @@ Entonces construir:
 
     $ env CC=clang CFLAGS=-I/usr/local/include LDFLAGS=-L/usr/local/lib ./configure
     $ make
-    
+
 #### Otros UNIX
 
 Si logras ejecutarlo en otros UNIX, por favor házmelo saber.
@@ -80,7 +80,7 @@ Si logras ejecutarlo en otros UNIX, por favor házmelo saber.
 ### Uso
 
     ./telegram -k <clave-servidor-público>
-    
+
 
 Por defecto la clave pública se almacena en la misma carpeta con el nombre tg-server.pub o en /etc/telegram/server.pub, si no lo es, indica dónde encontrarlo:
 
@@ -91,10 +91,10 @@ El Cliente soporta completamiento con TAB e historial de comandos.
 Peer se refiere al nombre del contacto o de diálogo y se puede acceder por completamiento con Tab.
 Para los contactos de usuario el peer es el Nombre <guión bajo> Apellido con todos los espacios cambiados a guiones bajos.
 Para los chats es su título con todos los espacios cambiados a guiones bajos.
-Para los chats encriptados es <marca de exclamación> <guión bajo> Nombre <guión bajo> Apellido con todos los espacios cambiados a guiones bajos. 
+Para los chats encriptados es <marca de exclamación> <guión bajo> Nombre <guión bajo> Apellido con todos los espacios cambiados a guiones bajos.
 
 Si dos o más peers tienen el mismo nombre, una almohadilla y un número es añadido al nombre. (por ejemplo A_B,A_B#1,A_B#2 y así sucesivamente).
-  
+
 ### Comandos soportados
 
 #### Mensajería

@@ -58,7 +58,7 @@ tgl_Peer_init(tgl_Peer *self, PyObject *args, PyObject *kwds)
 {
   static char *kwlist[] = {"type", "id", NULL};
   tgl_peer_id_t peer_id;
-  if(!PyArg_ParseTupleAndKeywords(args, kwds, "ii", kwlist, 
+  if(!PyArg_ParseTupleAndKeywords(args, kwds, "ii", kwlist,
                                   &peer_id.type,
                                   &peer_id.id))
   {
@@ -109,7 +109,7 @@ tgl_Peer_getuser_id (tgl_Peer *self, void *closure)
     case TGL_PEER_CHAT:
       PyErr_SetString(PeerError, "peer.type_name == 'chat' has no user_id");
       Py_RETURN_NONE;
- 
+
       break;
     case TGL_PEER_ENCR_CHAT:
       ret = PyLong_FromLong(self->peer->encr_chat.user_id);
@@ -345,7 +345,7 @@ tgl_Peer_gettype (tgl_Peer *self, void *closure)
 {
   PyObject *ret;
 
-  ret = PyLong_FromLong(self->peer->id.type); 
+  ret = PyLong_FromLong(self->peer->id.type);
 
   Py_XINCREF(ret);
   return ret;
@@ -1259,10 +1259,10 @@ static PyObject *
 tgl_Msg_getmedia (tgl_Msg *self, void *closure)
 {
   PyObject *ret;
-  
+
   // TODO probably want a custom class for media, but it's not too important right now.
   if(self->msg->media.type && self->msg->media.type != tgl_message_media_none && !(self->msg->flags & TGLMF_SERVICE)) {
-    
+
     ret = PyDict_New();
     switch (self->msg->media.type) {
     case tgl_message_media_photo:
@@ -1484,7 +1484,7 @@ static PyGetSetDef tgl_Msg_getseters[] = {
   {"id", (getter)tgl_Msg_getid, NULL, "", NULL},
   {"flags", (getter)tgl_Msg_getflags, NULL, "", NULL},
   {"mention", (getter)tgl_Msg_getmention, NULL, "", NULL},
-  {"out", (getter)tgl_Msg_getout, NULL, "", NULL}, 
+  {"out", (getter)tgl_Msg_getout, NULL, "", NULL},
   {"unread", (getter)tgl_Msg_getunread, NULL, "", NULL},
   {"service", (getter)tgl_Msg_getservice, NULL, "", NULL},
   {"src", (getter)tgl_Msg_getsrc, NULL, "", NULL},

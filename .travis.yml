@@ -18,4 +18,3 @@ script:
   - git submodule update --init --recursive
   - ./configure
   - make
-

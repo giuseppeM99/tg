@@ -126,7 +126,7 @@ char *home_directory;
 struct tgl_state *TLS;
 
 void set_default_username (const char *s) {
-  if (default_username) { 
+  if (default_username) {
     tfree_str (default_username);
   }
   default_username = tstrdup (s);
@@ -295,7 +295,7 @@ void running_for_first_time (void) {
 
 #ifdef HAVE_LIBCONFIG
 void parse_config_val (config_t *conf, char **s, char *param_name, const char *default_name, const char *path) {
-  static char buf[1000]; 
+  static char buf[1000];
   int l = 0;
   if (prefix) {
     l = strlen (prefix);
@@ -323,7 +323,7 @@ void parse_config_val (config_t *conf, char **s, char *param_name, const char *d
 
 void parse_config (void) {
   //config_filename = make_full_path (config_filename);
-  
+
   config_t conf;
   config_init (&conf);
   if (config_read_file (&conf, config_filename) != CONFIG_TRUE) {
@@ -342,19 +342,19 @@ void parse_config (void) {
     memcpy (buf, prefix, l);
     buf[l ++] = '.';
   }
-  
+
   int test_mode = 0;
   strcpy (buf + l, "test");
   config_lookup_bool (&conf, buf, &test_mode);
   if (test_mode) {
     tgl_set_test_mode (TLS);
   }
-  
+
   strcpy (buf + l, "log_level");
   long long t = log_level;
   config_lookup_int (&conf, buf, (void *)&t);
   log_level = t;
-  
+
   if (!msg_num_mode) {
     strcpy (buf + l, "msg_num");
     config_lookup_bool (&conf, buf, &msg_num_mode);
@@ -365,22 +365,22 @@ void parse_config (void) {
 
   parse_config_val (&conf, &auth_file_name, "auth_file", AUTH_KEY_FILE, config_directory);
   parse_config_val (&conf, &downloads_directory, "downloads", DOWNLOADS_DIRECTORY, config_directory);
-  
+
   if (!lua_file) {
     parse_config_val (&conf, &lua_file, "lua_script", 0, config_directory);
   }
-  
+
   if (!python_file) {
     parse_config_val (&conf, &python_file, "python_script", 0, config_directory);
   }
- 
+
   #if 0
   strcpy (buf + l, "binlog_enabled");
   config_lookup_bool (&conf, buf, &binlog_enabled);
   #else
   binlog_enabled = 0;
   #endif
-  
+
   int pfs_enabled = 0;
   strcpy (buf + l, "pfs_enabled");
   config_lookup_bool (&conf, buf, &pfs_enabled);
@@ -399,7 +399,7 @@ void parse_config (void) {
     //tgl_set_auth_file_path (auth_file_name);
   }
   tgl_set_download_directory (TLS, downloads_directory);
-  
+
   if (!mkdir (config_directory, CONFIG_DIRECTORY_MODE)) {
     if (!disable_output) {
       printf ("[%s] created\n", config_directory);
@@ -447,7 +447,7 @@ void inner_main (void) {
 
 void usage (void) {
   printf ("%s Usage\n", PROGNAME);
-    
+
   printf ("  --phone/-u                           specify username (would not be asked during authorization)\n");
   printf ("  --rsa-key/-k                         specify location of public key (possible multiple entries)\n");
   printf ("  --verbosity/-v                       increase verbosity (0-ERROR 1-WARNIN 2-NOTICE 3+-DEBUG-levels)\n");
@@ -483,7 +483,7 @@ void usage (void) {
   printf ("  --help/-h                            prints this help\n");
   printf ("  --accept-any-tcp                     accepts tcp connections from any src (only loopback by default)\n");
   printf ("  --disable-link-preview               disables server-side previews to links\n");
-  printf ("  --bot/-b                             bot mode\n");  
+  printf ("  --bot/-b                             bot mode\n");
   #ifdef USE_JSON
   printf ("  --json                               prints answers and values in json format\n");
   #endif
@@ -604,7 +604,7 @@ void args_parse (int argc, char **argv) {
 
   static struct option long_options[] = {
     {"debug-allocator", no_argument, 0,  1000 },
-    {"phone", required_argument, 0, 'u'}, 
+    {"phone", required_argument, 0, 'u'},
     {"rsa-key", required_argument, 0, 'k'},
     {"verbosity", no_argument, 0, 'v'},
     {"enable-msg-id", no_argument, 0, 'N'},
@@ -667,7 +667,7 @@ void args_parse (int argc, char **argv) {
   "Z:"
 #endif
   , long_options, NULL
-  
+
   )) != -1) {
     switch (opt) {
     case 'b':
@@ -820,15 +820,15 @@ void termination_signal_handler (int signum) {
     rl_free_line_state ();
     rl_cleanup_after_signal ();
   }
-  
-  if (write (1, "SIGNAL received\n", 18) < 0) { 
+
+  if (write (1, "SIGNAL received\n", 18) < 0) {
     // Sad thing
   }
- 
+
   if (unix_socket) {
     unlink (unix_socket);
   }
-  
+
   if (usfd > 0) {
     close (usfd);
   }
@@ -836,7 +836,7 @@ void termination_signal_handler (int signum) {
     close (sfd);
   }
   print_backtrace ();
-  
+
   exit (EXIT_FAILURE);
 }
 
@@ -845,7 +845,7 @@ volatile int sigterm_cnt;
 void sig_term_handler (int signum __attribute__ ((unused))) {
   signal (signum, termination_signal_handler);
   //set_terminal_attributes ();
-  if (write (1, "SIGTERM/SIGINT received\n", 25) < 0) { 
+  if (write (1, "SIGTERM/SIGINT received\n", 25) < 0) {
     // Sad thing
   }
   //if (TLS && TLS->ev_base) {
@@ -865,21 +865,21 @@ void do_halt (int error) {
     rl_cleanup_after_signal ();
   }
 
-  if (write (1, "halt\n", 5) < 0) { 
+  if (write (1, "halt\n", 5) < 0) {
     // Sad thing
   }
- 
+
   if (unix_socket) {
     unlink (unix_socket);
   }
-  
+
   if (usfd > 0) {
     close (usfd);
   }
   if (sfd > 0) {
     close (sfd);
   }
- 
+
   if (exit_code) {
     retval = exit_code;
   } else {
@@ -897,7 +897,7 @@ int main (int argc, char **argv) {
   signal (SIGFPE, termination_signal_handler);
 
   signal (SIGPIPE, SIG_IGN);
-  
+
   signal (SIGTERM, sig_term_handler);
   signal (SIGINT, sig_term_handler);
 
@@ -905,9 +905,9 @@ int main (int argc, char **argv) {
 
 
   log_level = 10;
-  
+
   args_parse (argc, argv);
-  
+
   change_user_group ();
 
   if (port > 0) {
@@ -924,11 +924,11 @@ int main (int argc, char **argv) {
       exit(1);
     }
     memset (&serv_addr, 0, sizeof (serv_addr));
-    
+
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = accept_any_tcp ? INADDR_ANY : htonl (0x7f000001);
     serv_addr.sin_port = htons (port);
- 
+
     if (bind (sfd, (struct sockaddr *) &serv_addr, sizeof (serv_addr)) < 0) {
       perror ("bind");
       exit(1);
@@ -938,7 +938,7 @@ int main (int argc, char **argv) {
   } else {
     sfd = -1;
   }
-  
+
   if (unix_socket) {
     assert (strlen (unix_socket) < 100);
     struct sockaddr_un serv_addr;
@@ -950,17 +950,17 @@ int main (int argc, char **argv) {
     }
 
     memset (&serv_addr, 0, sizeof (serv_addr));
-    
+
     serv_addr.sun_family = AF_UNIX;
 
     snprintf (serv_addr.sun_path, sizeof(serv_addr.sun_path), "%s", unix_socket);
- 
+
     if (bind (usfd, (struct sockaddr *) &serv_addr, sizeof (serv_addr)) < 0) {
       perror ("bind");
       exit(1);
     }
 
-    listen (usfd, 5);    
+    listen (usfd, 5);
   } else {
     usfd = -1;
   }
@@ -978,7 +978,7 @@ int main (int argc, char **argv) {
       "This is free software, and you are welcome to redistribute it\n"
       "under certain conditions; type `show_license' for details.\n"
       "Telegram-cli uses libtgl version " TGL_VERSION "\n"
-#ifndef TGL_AVOID_OPENSSL 
+#ifndef TGL_AVOID_OPENSSL
       "Telegram-cli includes software developed by the OpenSSL Project\n"
       "for use in the OpenSSL Toolkit. (http://www.openssl.org/)\n"
 #endif
@@ -1014,6 +1014,6 @@ int main (int argc, char **argv) {
 
 
   inner_main ();
-  
+
   return 0;
 }

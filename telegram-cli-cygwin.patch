@@ -12,5 +12,5 @@ diff -urN tg/Makefile tg-cygwin/Makefile
 -LOCAL_LDFLAGS=-rdynamic -ggdb -levent ${EXTRA_LIBS} -ldl -lpthread -lutil
 +LOCAL_LDFLAGS=-ggdb -levent ${EXTRA_LIBS} -ldl -lpthread -lutil
  LINK_FLAGS=${LDFLAGS} ${LOCAL_LDFLAGS}
- 
+
  DEP=dep

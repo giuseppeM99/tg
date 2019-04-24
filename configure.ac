@@ -35,14 +35,14 @@ EXTRA_LIBS=""
 
 AC_ARG_ENABLE(openssl,[  --disable-openssl	  disables OpenSSL, and don't link against it
 			  (this can't read *.pub files, though.)],
-  [ 
-  if test "x$enableval" = "xno" ; then    
+  [
+  if test "x$enableval" = "xno" ; then
   	AC_DEFINE([TGL_AVOID_OPENSSL],[1],[avoid OpenSSL entirely, use libgcrypt instead (this can't read *.pub files, though.)])
     AC_CHECK_LIB([gcrypt], [gcry_mpi_snatch], [], [AC_MSG_ERROR(["Need libgcrypt >= 1.60"])])
   else
     # Don't be annoying, so don't inform the user about --disable-openssl
     AX_CHECK_OPENSSL(,[AC_MSG_ERROR([No openssl found.])])
-  fi 
+  fi
   ],[
   AX_CHECK_OPENSSL(,[AC_MSG_ERROR([No openssl found. With --disable-openssl, libtgl will use libgcrypt instead.])])
   ])
@@ -52,29 +52,29 @@ AC_CHECK_LIB([readline], [rl_save_prompt], [ EXTRA_LIBS="${EXTRA_LIBS} -lreadlin
 
 AC_MSG_CHECKING([for libconfig])
 AC_ARG_ENABLE(libconfig,[--enable-libconfig/--disable-libconfig],
-  [ 
+  [
   if test "x$enableval" = "xno" ; then
     AC_MSG_RESULT([disabled])
   else
     AC_MSG_RESULT([enabled])
     AC_CHECK_LIB([config],[config_init],[],AC_MSG_ERROR([No libconfig found. Try --disable-libconfig]))
-  fi 
+  fi
   ],[
     AC_MSG_RESULT([enabled])
     AC_CHECK_LIB([config],[config_init],[],AC_MSG_ERROR([No libconfig found. Try --disable-libconfig]))
   ])
 
 AC_ARG_ENABLE(extf,[--enable-extf/--disable-extf],
-  [ 
-  if test "x$enableval" = "xno" ; then    
+  [
+  if test "x$enableval" = "xno" ; then
     AC_DEFINE([DISABLE_EXTF],[1],[disable extf queries])
-  fi 
+  fi
   ],[
   ])
 
 AC_MSG_CHECKING([for liblua])
 AC_ARG_ENABLE(liblua,[--enable-liblua/--disable-liblua],
-  [ 
+  [
   if test "x$enableval" = "xno" ; then
     AC_MSG_RESULT([disabled])
   else
@@ -90,7 +90,7 @@ AC_ARG_ENABLE(liblua,[--enable-liblua/--disable-liblua],
       [
         AC_MSG_ERROR([No lua found. Try --disable-liblua])
       ])
-  fi 
+  fi
   ],[
     AC_MSG_RESULT([enabled])
     AX_PROG_LUA([],[],
@@ -134,14 +134,14 @@ AC_ARG_ENABLE(python,[--enable-python/--disable-python],
 
 AC_MSG_CHECKING([for libjansson])
 AC_ARG_ENABLE(json,[--enable-json/--disable-json],
-  [ 
+  [
   if test "x$enableval" = "xno" ; then
     AC_MSG_RESULT([disabled])
   else
     AC_MSG_RESULT([enabled])
     AC_CHECK_LIB([jansson],[json_array_set_new],[],AC_MSG_ERROR([No libjansson found. Try --disable-json]))
     AC_DEFINE(USE_JSON,1,[use json])
-  fi 
+  fi
   ],[
     AC_MSG_RESULT([enabled])
     AC_CHECK_LIB([jansson],[json_array_set_new],[],AC_MSG_ERROR([No libjansson found. Try --disable-json]))
@@ -151,7 +151,7 @@ AC_ARG_ENABLE(json,[--enable-json/--disable-json],
 #check for custom prog name
 AC_MSG_CHECKING([progname])
 AC_ARG_WITH(progname,[--with-progname=<name>],
-  [ 
+  [
   if test "x$with_progname" = "xno" ; then
     AC_MSG_RESULT([default])
   elif test "x$with_progname" = "xyes" ; then
@@ -165,15 +165,15 @@ AC_ARG_WITH(progname,[--with-progname=<name>],
   ])
 
 AC_ARG_ENABLE(valgrind,[--enable-valgrind/--disable-valgrind],
-  [ 
+  [
   if test "x$enableval" = "xyes" ; then
     AC_CHECK_HEADER(valgrind/memcheck.h, [AC_DEFINE([VALGRIND_FIXES], [1], [fixed for correct valgrind work])], [
     ])
   fi
   ],[
   ])
-    
-    
+
+
 # Checks for header files.
 AC_CHECK_HEADERS([execinfo.h fcntl.h malloc.h netdb.h stdlib.h string.h unistd.h arpa/inet.h mach/mach.h netinet/in.h sys/file.h sys/socket.h termios.h])
 
@@ -192,4 +192,3 @@ AX_GCC_BUILTIN(__builtin_bswap32)
 AC_SUBST(EXTRA_LIBS)
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
-

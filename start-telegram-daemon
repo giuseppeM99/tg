@@ -29,7 +29,7 @@ my $pidfile = "$root/var/run/telegram-daemon$id.pid";
 
 # If we don't get a valid logfile parameter in the /etc/engine.conf file,
 # we'll just throw away all of our in-daemon output. We need to re-tie it so
-# that non-bash shells will not hang on logout. Thanks to Michael Renner for 
+# that non-bash shells will not hang on logout. Thanks to Michael Renner for
 # the tip
 my $fd_reopened = "/dev/null";
 $fd_reopened = "$root/var/log/telegram-daemon/telegram-daemon$idl.log" if -d "$root/var/log/telegram-daemon/";
@@ -44,7 +44,7 @@ sub handle_logfile
 sub reopen_logfile
 {
     my ($logfile) = @_;
-    
+
     open *STDERR, ">>$logfile";
     open *STDOUT, ">>$logfile";
     open *STDIN, ">>/dev/null";
@@ -77,7 +77,7 @@ my $conf_directives = {
         "logfile" => \&handle_logfile,
 };
 
-my %Vars = ( 
+my %Vars = (
              "execute" => "msg-search-engine",
              "work_dir"   => "$root/var/lib/telegram-daemon"
              );
@@ -100,7 +100,7 @@ if(open $etchandle, $etcfile)
 
                 if($line =~ /^[^\-]/)
                 {
-                        my ($directive, $int, $arg) = $line =~ /^(.*?)(\s+|\s*=\s*)(.*)/; 
+                        my ($directive, $int, $arg) = $line =~ /^(.*?)(\s+|\s*=\s*)(.*)/;
                         next unless $directive;
                         if (exists $conf_directives->{$directive}) {
                             $conf_directives->{$directive}->($arg);
@@ -113,7 +113,7 @@ if(open $etchandle, $etcfile)
                 $have_l = 1 if $line =~ /^-L\s/;
                 $have_c = 1 if $line =~ /^-c\s/;
                 $have_u = 1 if $line =~ /^-U\s/;
-                push @$params, $line;                
+                push @$params, $line;
         }
 
 }else{
@@ -134,10 +134,10 @@ if(-e $pidfile)
         if ($localpid && $localpid =~ /(\d+)/) { $localpid = $1; } else { $localpid = -1; }
         if (-d "/proc/$localpid")
         {
-                print STDERR "telegram-daemon$idl is already running.\n"; 
-                exit;                
+                print STDERR "telegram-daemon$idl is already running.\n";
+                exit;
         } else {
-                print STDERR "removing stale $pidfile.\n"; 
+                print STDERR "removing stale $pidfile.\n";
                 `rm -f $pidfile`;
         }
 
@@ -203,4 +203,3 @@ END_MSG
         print STDERR "Can't write pidfile to $pidfile.\n";
     }
 }
-

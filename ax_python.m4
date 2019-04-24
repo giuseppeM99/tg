@@ -97,7 +97,7 @@ PYTHON_FOUND=yes
 if test x$ax_python_header != xno; then
   PYTHON_INCLUDE_DIR=$ax_python_header
   AC_SUBST(PYTHON_INCLUDE_DIR)
-else 
+else
   PYTHON_FOUND=no
 fi
 

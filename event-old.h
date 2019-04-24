@@ -11,15 +11,15 @@
 #define BEV_EVENT_TIMEOUT EVBUFFER_TIMEOUT
 
 typedef int evutil_socket_t;
-  
+
 static inline struct event *event_new (struct event_base *base, int fd, int what, void(*callback)(int, short, void *), void *arg) __attribute__ ((unused));
 static inline struct event *event_new (struct event_base *base, int fd, int what, void(*callback)(int, short, void *), void *arg) {
-  struct event *ev = malloc (sizeof (*ev));  
+  struct event *ev = malloc (sizeof (*ev));
   event_set (ev, fd, what, callback, arg);
   event_base_set (base, ev);
   return ev;
 }
-  
+
 static inline struct event *evtimer_new (struct event_base *base, void(*callback)(int, short, void *), void *arg) __attribute__ ((unused));
 static inline struct event *evtimer_new (struct event_base *base, void(*callback)(int, short, void *), void *arg) {
   struct event *ev = malloc (sizeof (*ev));

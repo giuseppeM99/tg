@@ -66,4 +66,3 @@ tgl.set_on_msg_receive(on_msg_receive)
 tgl.set_on_secret_chat_update(on_secret_chat_update)
 tgl.set_on_user_update(on_user_update)
 tgl.set_on_chat_update(on_chat_update)
-

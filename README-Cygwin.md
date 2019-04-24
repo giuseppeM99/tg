@@ -15,7 +15,7 @@ Then Clone GitHub Repository in Cygwin Terminal
      git clone --recursive https://github.com/vysheng/tg.git
 
 
-In Cygwin Terminal, type: 
+In Cygwin Terminal, type:
 
      apt-cyg install libevent-devel openssl-devel libreadline-devel lua-devel python3
 (Install package 'python' to use Python 2.7, or install package 'python3' to use Python 3)
@@ -23,7 +23,7 @@ In Cygwin Terminal, type:
 libconfig and libjansson is not in cygwin's package, so you should compile yourself.
 
 Compile libconfig
-     
+
      wget http://www.hyperrealm.com/libconfig/libconfig-1.5.tar.gz
      tar xvf libconfig-1.5.tar.gz && cd libconfig-1.5
      ./configure
@@ -40,7 +40,7 @@ Then, go to tg directory then generate Makefile.
 
      cd tg
      ./configure
-     
+
 We need to patch Makefile and loop.c to compile in cygwin. Download this [patch](https://gist.github.com/ied206/d774a445f36004d263ab) then untar. Then, patch in tg directory.
 
      patch -p1 < telegram-cli-cygwin.patch
@@ -51,7 +51,7 @@ Then
 After compile is done, **telegram-cli.exe** will be generated in **bin** directory.
 
 To run telegram-cli, type
-     
+
      bin/telegram-cli -k tg-server.pub
 
 **Caution**: A binary compiled with Cygwin should be run in Cygwin Terminal.

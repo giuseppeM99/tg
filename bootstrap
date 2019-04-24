@@ -1,6 +1,6 @@
 #! /bin/sh
 
-aclocal 
+aclocal
 autoheader
-automake --gnu --add-missing 
+automake --gnu --add-missing
 autoconf

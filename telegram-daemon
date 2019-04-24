@@ -23,7 +23,7 @@
 # -- checks to avoid creating empty engine configuration files
 
 
-# a bit changed it for telegram-daemon to use different folders 
+# a bit changed it for telegram-daemon to use different folders
 # and to have posiiblilities to have fake root
 # Vitaly Valtman
 
@@ -329,4 +329,3 @@ case "$command" in
 esac
 
 exit 0
-
